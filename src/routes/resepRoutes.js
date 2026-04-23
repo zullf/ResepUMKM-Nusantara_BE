@@ -4,6 +4,7 @@ const router = express.Router();
 const controller = require('../controllers/resepController');
 const validate = require('../middlewares/validateResep');
 
+router.get('/resepUMKM/search', controller.searchResep);
 router.get('/resepUMKM', controller.getAllResep);
 router.post('/resepUMKM', validate, controller.createResep);
 router.delete('/resepUMKM/:id', controller.deleteResep);

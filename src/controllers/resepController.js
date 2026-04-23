@@ -1,4 +1,23 @@
-const resepModel = require('../models/resepModel');
+const resepModel = require("../models/resepModel");
+
+const searchResep = async (req, res) => {
+  const { q } = req.query;
+
+  if (!q || q.trim() === "") {
+    return res
+      .status(400)
+      .json({ message: "Query pencarian tidak boleh kosong" });
+  }
+
+  try {
+    const result = await resepModel.searchResep(q);
+    res.json(result); 
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Gagal melakukan pencarian", error: err.message });
+  }
+};
 
 const getAllResep = async (req, res) => {
   try {
@@ -32,13 +51,12 @@ const deleteResep = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: 'Resep berhasil dihapus'
+      message: "Resep berhasil dihapus",
     });
-
   } catch (err) {
     return res.status(500).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
 };
@@ -47,4 +65,5 @@ module.exports = {
   getAllResep,
   createResep,
   deleteResep,
+  searchResep,
 };

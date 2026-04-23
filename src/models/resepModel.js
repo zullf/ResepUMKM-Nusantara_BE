@@ -26,12 +26,34 @@ const getResep = async ({ kategori, tingkatKesulitan, page, limit }) => {
       "SELECT * FROM bahan WHERE resep_id = $1",
       [r.id]
     );
-
     const langkah = await pool.query(
       "SELECT * FROM langkah WHERE resep_id = $1 ORDER BY urutan",
       [r.id]
     );
+    r.bahan = bahan.rows;
+    r.langkah = langkah.rows;
+  }
 
+  return resep.rows;
+};
+
+const searchResep = async (q) => {
+  const resep = await pool.query(
+    `SELECT * FROM resep 
+     WHERE nama ILIKE $1
+     ORDER BY created_at DESC`,
+    [`%${q}%`]
+  );
+
+  for (let r of resep.rows) {
+    const bahan = await pool.query(
+      "SELECT * FROM bahan WHERE resep_id = $1",
+      [r.id]
+    );
+    const langkah = await pool.query(
+      "SELECT * FROM langkah WHERE resep_id = $1 ORDER BY urutan",
+      [r.id]
+    );
     r.bahan = bahan.rows;
     r.langkah = langkah.rows;
   }
@@ -89,6 +111,7 @@ const deleteResep = async (id) => {
 
 module.exports = {
   getResep,
+  searchResep, 
   createResep,
   deleteResep,
 };
